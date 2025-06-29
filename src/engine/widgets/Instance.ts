@@ -1,8 +1,3 @@
-// TODO: Look into performance.
-// TODO: Look into how parenting works. (Private api .addParent?)
-// TODO: Look into cloning.
-// TODO: In destroy, clear all connections.
-
 import { Event } from "../core/Event";
 
 export abstract class Inst implements Instance {
@@ -136,7 +131,7 @@ export abstract class Inst implements Instance {
 
         for (const child of this.ChildByID.values()) {
             const childClone = child.Clone();
-            if (childClone) {
+            if (childClone !== undefined) {
                 childClone.Parent = clone;
             }
         }
@@ -290,12 +285,7 @@ export abstract class Inst implements Instance {
         return ancestor.IsAncestorOf(this);
     }
 
-    public IsPropertyModified(name: string): boolean {
-        // TODO: track defaults
-        return false;
-    }
+    public abstract IsPropertyModified(name: string): boolean
 
-    public ResetPropertyToDefault(name: string): void {
-        // TODO: implement when default values are tracked
-    }
+    public abstract ResetPropertyToDefault(name: string): void;
 }
