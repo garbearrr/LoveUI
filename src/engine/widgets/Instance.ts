@@ -1,6 +1,6 @@
 import { Event } from "../core/Event";
 
-export abstract class Inst implements Instance {
+export abstract class AInstance implements Instance {
     private static nextId = 0;
 
     private _archivable: boolean = true;
@@ -26,7 +26,7 @@ export abstract class Inst implements Instance {
     public readonly Destroying = new Event<() => void>();
 
     public constructor(name: string, className: string, parent?: Instance) {
-        this.id = Inst.nextId++;
+        this.id = AInstance.nextId++;
         this._name = name;
         this.ClassName = className;
         this._parent = undefined;
@@ -54,7 +54,7 @@ export abstract class Inst implements Instance {
         if (this._name !== v) {
             this._name = v;
             if (this._parent) {
-                (this._parent as Inst).ChildByName.set(v, this);
+                (this._parent as AInstance).ChildByName.set(v, this);
             }
             this.signalPropertyChanged("Name");
         }
@@ -66,7 +66,7 @@ export abstract class Inst implements Instance {
     public set Parent(p: Instance | undefined) {
         if (this._parent === p) return;
 
-        const oldParent = this._parent as Inst | undefined;
+        const oldParent = this._parent as AInstance | undefined;
         if (oldParent) {
             oldParent.ChildByName.delete(this.Name);
             oldParent.ChildByID.delete(this.id);
@@ -76,9 +76,9 @@ export abstract class Inst implements Instance {
         this._parent = p;
 
         if (p) {
-            (p as Inst).ChildByName.set(this.Name, this);
-            (p as Inst).ChildByID.set(this.id, this);
-            (p as Inst).ChildAdded.Fire({ child: this });
+            (p as AInstance).ChildByName.set(this.Name, this);
+            (p as AInstance).ChildByID.set(this.id, this);
+            (p as AInstance).ChildAdded.Fire({ child: this });
 
             let ancestor: Instance | undefined = p;
             while (ancestor) {
@@ -259,7 +259,7 @@ export abstract class Inst implements Instance {
     }
 
     public GetPropertyChangedSignal<T extends Instance>(this: T, propertyName: any): Event<void> {
-        const self = this as unknown as Inst;
+        const self = this as unknown as AInstance;
         let evt = self.propertySignals.get(propertyName);
         if (!evt) {
             evt = new Event<void>();

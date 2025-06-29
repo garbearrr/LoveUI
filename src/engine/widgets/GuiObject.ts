@@ -1,7 +1,7 @@
 import { Event } from "../core/Event";
-import { GuiBase } from "./GuiBase";
+import { AGuiBase } from "./GuiBase";
 
-export abstract class GuiObject extends GuiBase implements GuiObject {
+export abstract class AGuiObject extends AGuiBase implements GuiObject {
     // properties
     private _anchorPoint: Vector2 = { X: 0, Y: 0 };
     private _automaticSize: AutomaticSize = "None";

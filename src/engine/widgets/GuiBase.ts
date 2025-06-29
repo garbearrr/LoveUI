@@ -1,6 +1,6 @@
-import { Inst } from "./Instance";
+import { AInstance } from "./Instance";
 
-export abstract class GuiBase extends Inst implements GuiBase {
+export abstract class AGuiBase extends AInstance implements GuiBase {
     protected _absolutePosition: Vector2 = { X: 0, Y: 0 };
     protected _absoluteRotation = 0;
     protected _absoluteSize: Vector2 = { X: 0, Y: 0 };
