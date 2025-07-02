@@ -35,29 +35,6 @@ export abstract class AGuiObject extends AGuiBase implements GuiObject {
     public readonly MouseMoved = new Event<{ x: number; y: number }>();
     public readonly MouseWheelBackward = new Event<{ x: number; y: number }>();
     public readonly MouseWheelForward = new Event<{ x: number; y: number }>();
-    public readonly SelectionGained = new Event<void>();
-    public readonly SelectionLost = new Event<void>();
-    public readonly TouchLongPress = new Event<{ touchPositions: Array<Vector2>; state: UserInputState }>();
-    public readonly TouchPan = new Event<{
-        touchPositions: Array<Vector2>;
-        totalTranslation: Vector2;
-        velocity: Vector2;
-        state: UserInputState;
-    }>();
-    public readonly TouchPinch = new Event<{
-        touchPositions: Array<Vector2>;
-        scale: number;
-        velocity: number;
-        state: UserInputState;
-    }>();
-    public readonly TouchRotate = new Event<{
-        touchPositions: Array<Vector2>;
-        rotation: number;
-        velocity: number;
-        state: UserInputState;
-    }>();
-    public readonly TouchSwipe = new Event<{ swipeDirection: SwipeDirection; numberOfTouches: number }>();
-    public readonly TouchTap = new Event<{ touchPositions: Array<Vector2> }>();
 
     protected constructor(name: string, className: string, parent?: Instance) {
         super(name, className, parent);

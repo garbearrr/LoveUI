@@ -12,10 +12,10 @@ local __TS__SetDescriptor = ____lualib.__TS__SetDescriptor
 local ____exports = {}
 local ____Event = require("src.engine.core.Event")
 local Event = ____Event.Event
-____exports.Inst = __TS__Class()
-local Inst = ____exports.Inst
-Inst.name = "Inst"
-function Inst.prototype.____constructor(self, name, className, parent)
+____exports.AInstance = __TS__Class()
+local AInstance = ____exports.AInstance
+AInstance.name = "AInstance"
+function AInstance.prototype.____constructor(self, name, className, parent)
     self._archivable = true
     self.ChildByName = __TS__New(Map)
     self.ChildByID = __TS__New(Map)
@@ -29,10 +29,10 @@ function Inst.prototype.____constructor(self, name, className, parent)
     self.ChildRemoved = __TS__New(Event)
     self.DescendantAdded = __TS__New(Event)
     self.Destroying = __TS__New(Event)
-    local ____exports_Inst_0, ____nextId_1 = ____exports.Inst, "nextId"
-    local ____exports_Inst_nextId_2 = ____exports_Inst_0[____nextId_1]
-    ____exports_Inst_0[____nextId_1] = ____exports_Inst_nextId_2 + 1
-    self.id = ____exports_Inst_nextId_2
+    local ____exports_AInstance_0, ____nextId_1 = ____exports.AInstance, "nextId"
+    local ____exports_AInstance_nextId_2 = ____exports_AInstance_0[____nextId_1]
+    ____exports_AInstance_0[____nextId_1] = ____exports_AInstance_nextId_2 + 1
+    self.id = ____exports_AInstance_nextId_2
     self._name = name
     self.ClassName = className
     self._parent = nil
@@ -40,33 +40,33 @@ function Inst.prototype.____constructor(self, name, className, parent)
         self.Parent = parent
     end
 end
-function Inst.prototype.signalPropertyChanged(self, name)
+function AInstance.prototype.signalPropertyChanged(self, name)
     local sig = self.propertySignals:get(name)
     if sig then
         sig:Fire()
     end
     self.Changed:Fire()
 end
-function Inst.prototype.AddTag(self, tag)
+function AInstance.prototype.AddTag(self, tag)
     self.Tags:add(tag)
 end
-function Inst.prototype.RemoveTag(self, tag)
+function AInstance.prototype.RemoveTag(self, tag)
     self.Tags:delete(tag)
 end
-function Inst.prototype.GetTags(self)
+function AInstance.prototype.GetTags(self)
     return {__TS__Spread(self.Tags)}
 end
-function Inst.prototype.HasTag(self, tag)
+function AInstance.prototype.HasTag(self, tag)
     return self.Tags:has(tag)
 end
-function Inst.prototype.ClearAllChildren(self)
+function AInstance.prototype.ClearAllChildren(self)
     for ____, child in __TS__Iterator(self.ChildByID:values()) do
         child:Destroy()
     end
     self.ChildByName:clear()
     self.ChildByID:clear()
 end
-function Inst.prototype.Clone(self)
+function AInstance.prototype.Clone(self)
     if not self.Archivable then
         return nil
     end
@@ -75,13 +75,13 @@ function Inst.prototype.Clone(self)
     clone.Archivable = self.Archivable
     for ____, child in __TS__Iterator(self.ChildByID:values()) do
         local childClone = child:Clone()
-        if childClone then
+        if childClone ~= nil then
             childClone.Parent = clone
         end
     end
     return clone
 end
-function Inst.prototype.Destroy(self)
+function AInstance.prototype.Destroy(self)
     self.Destroying:Fire(function()
     end)
     self:ClearAllChildren()
@@ -97,7 +97,7 @@ function Inst.prototype.Destroy(self)
     self.propertySignals:forEach(function(____, e) return e:Destroy() end)
     self.attributeSignals:forEach(function(____, e) return e:Destroy() end)
 end
-function Inst.prototype.FindFirstAncestor(self, name)
+function AInstance.prototype.FindFirstAncestor(self, name)
     local current = self.Parent
     while current do
         if current.Name == name then
@@ -107,7 +107,7 @@ function Inst.prototype.FindFirstAncestor(self, name)
     end
     return nil
 end
-function Inst.prototype.FindFirstAncestorOfClass(self, className)
+function AInstance.prototype.FindFirstAncestorOfClass(self, className)
     local current = self.Parent
     while current do
         if current.ClassName == className then
@@ -117,7 +117,7 @@ function Inst.prototype.FindFirstAncestorOfClass(self, className)
     end
     return nil
 end
-function Inst.prototype.FindFirstAncestorWhichIsA(self, className)
+function AInstance.prototype.FindFirstAncestorWhichIsA(self, className)
     local current = self.Parent
     while current do
         if current:IsA(className) then
@@ -127,7 +127,7 @@ function Inst.prototype.FindFirstAncestorWhichIsA(self, className)
     end
     return nil
 end
-function Inst.prototype.FindFirstChild(self, childName, recursive)
+function AInstance.prototype.FindFirstChild(self, childName, recursive)
     if recursive == nil then
         recursive = false
     end
@@ -152,7 +152,7 @@ function Inst.prototype.FindFirstChild(self, childName, recursive)
     end
     return nil
 end
-function Inst.prototype.FindFirstChildOfClass(self, className)
+function AInstance.prototype.FindFirstChildOfClass(self, className)
     for ____, child in __TS__Iterator(self.ChildByID:values()) do
         if child.ClassName == className then
             return child
@@ -160,7 +160,7 @@ function Inst.prototype.FindFirstChildOfClass(self, className)
     end
     return nil
 end
-function Inst.prototype.FindFirstChildWhichIsA(self, className, recursive)
+function AInstance.prototype.FindFirstChildWhichIsA(self, className, recursive)
     if recursive == nil then
         recursive = false
     end
@@ -177,7 +177,7 @@ function Inst.prototype.FindFirstChildWhichIsA(self, className, recursive)
     end
     return nil
 end
-function Inst.prototype.FindFirstDescendant(self, name)
+function AInstance.prototype.FindFirstDescendant(self, name)
     for ____, desc in ipairs(self:GetDescendants()) do
         if desc.Name == name then
             return desc
@@ -185,7 +185,7 @@ function Inst.prototype.FindFirstDescendant(self, name)
     end
     return nil
 end
-function Inst.prototype.GetAttributeChangedSignal(self, attribute)
+function AInstance.prototype.GetAttributeChangedSignal(self, attribute)
     local evt = self.attributeSignals:get(attribute)
     if not evt then
         evt = __TS__New(Event)
@@ -193,10 +193,10 @@ function Inst.prototype.GetAttributeChangedSignal(self, attribute)
     end
     return evt
 end
-function Inst.prototype.GetChildren(self)
+function AInstance.prototype.GetChildren(self)
     return __TS__ArrayFrom(self.ChildByID:values())
 end
-function Inst.prototype.GetDescendants(self)
+function AInstance.prototype.GetDescendants(self)
     local result = {}
     for ____, child in __TS__Iterator(self.ChildByID:values()) do
         result[#result + 1] = child
@@ -207,7 +207,7 @@ function Inst.prototype.GetDescendants(self)
     end
     return result
 end
-function Inst.prototype.GetFullName(self)
+function AInstance.prototype.GetFullName(self)
     local names = {self.Name}
     local current = self.Parent
     while current do
@@ -216,7 +216,7 @@ function Inst.prototype.GetFullName(self)
     end
     return table.concat(names, ".")
 end
-function Inst.prototype.GetPropertyChangedSignal(self, propertyName)
+function AInstance.prototype.GetPropertyChangedSignal(self, propertyName)
     local ____self = self
     local evt = ____self.propertySignals:get(propertyName)
     if not evt then
@@ -225,10 +225,10 @@ function Inst.prototype.GetPropertyChangedSignal(self, propertyName)
     end
     return evt
 end
-function Inst.prototype.IsA(self, className)
+function AInstance.prototype.IsA(self, className)
     return self.ClassName == className
 end
-function Inst.prototype.IsAncestorOf(self, descendant)
+function AInstance.prototype.IsAncestorOf(self, descendant)
     local current = descendant.Parent
     while current do
         if current == self then
@@ -238,17 +238,12 @@ function Inst.prototype.IsAncestorOf(self, descendant)
     end
     return false
 end
-function Inst.prototype.IsDescendantOf(self, ancestor)
+function AInstance.prototype.IsDescendantOf(self, ancestor)
     return ancestor:IsAncestorOf(self)
 end
-function Inst.prototype.IsPropertyModified(self, name)
-    return false
-end
-function Inst.prototype.ResetPropertyToDefault(self, name)
-end
-Inst.nextId = 0
+AInstance.nextId = 0
 __TS__SetDescriptor(
-    Inst.prototype,
+    AInstance.prototype,
     "Archivable",
     {
         get = function(self)
@@ -264,7 +259,7 @@ __TS__SetDescriptor(
     true
 )
 __TS__SetDescriptor(
-    Inst.prototype,
+    AInstance.prototype,
     "Name",
     {
         get = function(self)
@@ -283,7 +278,7 @@ __TS__SetDescriptor(
     true
 )
 __TS__SetDescriptor(
-    Inst.prototype,
+    AInstance.prototype,
     "Parent",
     {
         get = function(self)
