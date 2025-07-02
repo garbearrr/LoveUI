@@ -24,6 +24,30 @@ export abstract class AGuiObject extends AGuiBase implements GuiObject {
     private _visible = true;
     private _zIndex = 0;
 
+    protected static DefaultProperties = {
+        ...AGuiBase.DefaultProperties,
+        _anchorPoint: { X: 0, Y: 0 },
+        _automaticSize: "None" as AutomaticSize,
+        _backgroundColor3: { R: 1, G: 1, B: 1 },
+        _backgroundTransparency: 0,
+        _borderColor3: { R: 0, G: 0, B: 0 },
+        _borderMode: "Outline" as BorderMode,
+        _borderSizePixel: 1,
+        _clipsDescendants: false,
+        _draggable: false,
+        _layoutOrder: 0,
+        _position: { X: { Scale: 0, Pixel: 0 }, Y: { Scale: 0, Pixel: 0 } },
+        _rotation: 0,
+        _selectable: false,
+        _selectionImageObject: undefined as GuiObject | undefined,
+        _selectionOrder: 0,
+        _size: { X: { Scale: 0, Pixel: 0 }, Y: { Scale: 0, Pixel: 0 } },
+        _sizeConstraint: "RelativeXY" as SizeConstraint,
+        _transparency: 0,
+        _visible: true,
+        _zIndex: 0,
+    };
+
     // events
     public readonly DragBegin = new Event<{ initialPosition: UDim2 }>();
     public readonly DragStopped = new Event<{ x: number; y: number }>();
@@ -36,29 +60,8 @@ export abstract class AGuiObject extends AGuiBase implements GuiObject {
     public readonly MouseWheelBackward = new Event<{ x: number; y: number }>();
     public readonly MouseWheelForward = new Event<{ x: number; y: number }>();
 
-    protected constructor(name: string, className: string, parent?: Instance) {
-        super(name, className, parent);
-
-        this.DefaultProperties._anchorPoint = { X: 0, Y: 0 };
-        this.DefaultProperties._automaticSize = "None";
-        this.DefaultProperties._backgroundColor3 = { R: 1, G: 1, B: 1 };
-        this.DefaultProperties._backgroundTransparency = 0;
-        this.DefaultProperties._borderColor3 = { R: 0, G: 0, B: 0 };
-        this.DefaultProperties._borderMode = "Outline";
-        this.DefaultProperties._borderSizePixel = 1;
-        this.DefaultProperties._clipsDescendants = false;
-        this.DefaultProperties._draggable = false;
-        this.DefaultProperties._layoutOrder = 0;
-        this.DefaultProperties._position = { X: { Scale: 0, Pixel: 0 }, Y: { Scale: 0, Pixel: 0 } };
-        this.DefaultProperties._rotation = 0;
-        this.DefaultProperties._selectable = false;
-        this.DefaultProperties._selectionImageObject = undefined;
-        this.DefaultProperties._selectionOrder = 0;
-        this.DefaultProperties._size = { X: { Scale: 0, Pixel: 0 }, Y: { Scale: 0, Pixel: 0 } };
-        this.DefaultProperties._sizeConstraint = "RelativeXY";
-        this.DefaultProperties._transparency = 0;
-        this.DefaultProperties._visible = true;
-        this.DefaultProperties._zIndex = 0;
+    protected constructor(name: string, className: string) {
+        super(name, className);
     }
 
     // property accessors
@@ -262,5 +265,13 @@ export abstract class AGuiObject extends AGuiBase implements GuiObject {
         this.Position = endPosition;
         if (callback) callback("Completed");
         return true;
+    }
+
+    public Update(dt: number): void {
+        // override in widgets that need per-frame updates
+    }
+
+    public Draw(): void {
+        // override in widgets
     }
 }

@@ -48,7 +48,8 @@ type UserInputState = "Begin" | "Change" | "End" | "Cancel";
 interface InputObject {}
 
 interface Instances {
-	Frame: Frame;
+        Frame: Frame;
+        RootWidget: Frame;
 }
 
 interface Instance {
@@ -528,3 +529,4 @@ interface GuiObject extends GuiBase {
 
 
 interface Frame extends GuiObject {}
+interface RootWidget extends Frame {}
