@@ -15,7 +15,7 @@ local Event = ____Event.Event
 ____exports.AInstance = __TS__Class()
 local AInstance = ____exports.AInstance
 AInstance.name = "AInstance"
-function AInstance.prototype.____constructor(self, name, className, parent)
+function AInstance.prototype.____constructor(self, name, className)
     self._archivable = true
     self.ChildByName = __TS__New(Map)
     self.ChildByID = __TS__New(Map)
@@ -36,9 +36,8 @@ function AInstance.prototype.____constructor(self, name, className, parent)
     self._name = name
     self.ClassName = className
     self._parent = nil
-    if parent then
-        self.Parent = parent
-    end
+end
+function AInstance.prototype.onParentChanged(self, newParent, oldParent)
 end
 function AInstance.prototype.signalPropertyChanged(self, name)
     local sig = self.propertySignals:get(name)
@@ -241,7 +240,22 @@ end
 function AInstance.prototype.IsDescendantOf(self, ancestor)
     return ancestor:IsAncestorOf(self)
 end
+function AInstance.prototype.IsPropertyModified(self, name)
+    local defaults = self.constructor.DefaultProperties
+    local defaultValue = defaults[name]
+    local currentValue = self[name]
+    return defaultValue ~= currentValue
+end
+function AInstance.prototype.ResetPropertyToDefault(self, name)
+    local defaults = self.constructor.DefaultProperties
+    local defaultValue = defaults[name]
+    if self[name] ~= defaultValue then
+        self[name] = defaultValue
+        self:signalPropertyChanged(name)
+    end
+end
 AInstance.nextId = 0
+AInstance.DefaultProperties = {_archivable = true}
 __TS__SetDescriptor(
     AInstance.prototype,
     "Archivable",
@@ -307,6 +321,7 @@ __TS__SetDescriptor(
             end
             self.AncestryChanged:Fire({child = self, parent = p})
             self:signalPropertyChanged("Parent")
+            self:onParentChanged(p, oldParent)
         end
     },
     true

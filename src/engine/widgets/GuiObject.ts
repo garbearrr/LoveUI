@@ -267,8 +267,39 @@ export abstract class AGuiObject extends AGuiBase implements GuiObject {
         return true;
     }
 
+    protected computeAbsolute(): void {
+        const parent = this.Parent as AGuiObject | undefined;
+        let pPos: Vector2;
+        let pSize: Vector2;
+        if (parent) {
+            pPos = parent.AbsolutePosition;
+            pSize = parent.AbsoluteSize;
+        } else {
+            pPos = { X: 0, Y: 0 };
+            pSize = { X: love.graphics.getWidth(), Y: love.graphics.getHeight() };
+        }
+
+        this._absoluteSize = {
+            X: pSize.X * this._size.X.Scale + this._size.X.Pixel,
+            Y: pSize.Y * this._size.Y.Scale + this._size.Y.Pixel,
+        };
+
+        this._absolutePosition = {
+            X:
+                pPos.X +
+                pSize.X * this._position.X.Scale +
+                this._position.X.Pixel -
+                this._anchorPoint.X * this._absoluteSize.X,
+            Y:
+                pPos.Y +
+                pSize.Y * this._position.Y.Scale +
+                this._position.Y.Pixel -
+                this._anchorPoint.Y * this._absoluteSize.Y,
+        };
+    }
+
     public Update(dt: number): void {
-        // override in widgets that need per-frame updates
+        this.computeAbsolute();
     }
 
     public Draw(): void {
