@@ -25,6 +25,8 @@ export abstract class AInstance implements Instance {
     public readonly DescendantAdded = new Event<{ descendant: Instance }>();
     public readonly Destroying = new Event<() => void>();
 
+    protected DefaultProperties: { [key: string]: any } = {"_archivable": true};
+
     public constructor(name: string, className: string, parent?: Instance) {
         this.id = AInstance.nextId++;
         this._name = name;
@@ -285,7 +287,17 @@ export abstract class AInstance implements Instance {
         return ancestor.IsAncestorOf(this);
     }
 
-    public abstract IsPropertyModified(name: string): boolean
+    public IsPropertyModified(name: keyof AInstance["DefaultProperties"]): boolean {
+        const defaultValue = this.DefaultProperties[name];
+        const currentValue = (this as any)[name];
+        return defaultValue !== currentValue;
+    }
 
-    public abstract ResetPropertyToDefault(name: string): void;
+    public ResetPropertyToDefault(name: Extract<keyof AInstance["DefaultProperties"], string>): void {
+        const defaultValue = this.DefaultProperties[name];
+        if ((this as any)[name] !== defaultValue) {
+            (this as any)[name] = defaultValue;
+            this.signalPropertyChanged(name);
+        }
+    }
 }

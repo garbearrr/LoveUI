@@ -38,6 +38,27 @@ export abstract class AGuiObject extends AGuiBase implements GuiObject {
 
     protected constructor(name: string, className: string, parent?: Instance) {
         super(name, className, parent);
+
+        this.DefaultProperties._anchorPoint = { X: 0, Y: 0 };
+        this.DefaultProperties._automaticSize = "None";
+        this.DefaultProperties._backgroundColor3 = { R: 1, G: 1, B: 1 };
+        this.DefaultProperties._backgroundTransparency = 0;
+        this.DefaultProperties._borderColor3 = { R: 0, G: 0, B: 0 };
+        this.DefaultProperties._borderMode = "Outline";
+        this.DefaultProperties._borderSizePixel = 1;
+        this.DefaultProperties._clipsDescendants = false;
+        this.DefaultProperties._draggable = false;
+        this.DefaultProperties._layoutOrder = 0;
+        this.DefaultProperties._position = { X: { Scale: 0, Pixel: 0 }, Y: { Scale: 0, Pixel: 0 } };
+        this.DefaultProperties._rotation = 0;
+        this.DefaultProperties._selectable = false;
+        this.DefaultProperties._selectionImageObject = undefined;
+        this.DefaultProperties._selectionOrder = 0;
+        this.DefaultProperties._size = { X: { Scale: 0, Pixel: 0 }, Y: { Scale: 0, Pixel: 0 } };
+        this.DefaultProperties._sizeConstraint = "RelativeXY";
+        this.DefaultProperties._transparency = 0;
+        this.DefaultProperties._visible = true;
+        this.DefaultProperties._zIndex = 0;
     }
 
     // property accessors

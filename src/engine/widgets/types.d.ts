@@ -23,7 +23,7 @@ interface UDim2 {
 }
 
 interface Vector2 {
-        readonly X: number;
+    readonly X: number;
     readonly Y: number;
 }
 
@@ -48,7 +48,7 @@ type UserInputState = "Begin" | "Change" | "End" | "Cancel";
 interface InputObject {}
 
 interface Instances {
-
+	Frame: Frame;
 }
 
 interface Instance {
@@ -525,3 +525,6 @@ interface GuiObject extends GuiBase {
 	 */
         readonly MouseWheelForward: IEvent<{ x: number; y: number }>;
 }
+
+
+interface Frame extends GuiObject {}

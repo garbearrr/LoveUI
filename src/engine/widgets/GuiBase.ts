@@ -7,6 +7,10 @@ export abstract class AGuiBase extends AInstance implements GuiBase {
 
     protected constructor(name: string, className: string, parent?: Instance) {
         super(name, className, parent);
+
+        this.DefaultProperties._absolutePosition = { X: 0, Y: 0 };
+        this.DefaultProperties._absoluteRotation = 0;
+        this.DefaultProperties._absoluteSize = { X: 0, Y: 0 };
     }
 
     public get AbsolutePosition(): Vector2 {
