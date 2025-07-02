@@ -25,17 +25,13 @@ export abstract class AInstance implements Instance {
     public readonly DescendantAdded = new Event<{ descendant: Instance }>();
     public readonly Destroying = new Event<() => void>();
 
-    protected DefaultProperties: { [key: string]: any } = {"_archivable": true};
+    protected static DefaultProperties: { [key: string]: any } = { _archivable: true };
 
-    public constructor(name: string, className: string, parent?: Instance) {
+    public constructor(name: string, className: string) {
         this.id = AInstance.nextId++;
         this._name = name;
         this.ClassName = className;
         this._parent = undefined;
-
-        if (parent) {
-            this.Parent = parent;
-        }
     }
 
     // property accessors
@@ -91,6 +87,11 @@ export abstract class AInstance implements Instance {
 
         this.AncestryChanged.Fire({ child: this, parent: p });
         this.signalPropertyChanged("Parent");
+        this.onParentChanged(p, oldParent);
+    }
+
+    protected onParentChanged(newParent: Instance | undefined, oldParent: Instance | undefined): void {
+        // can be overridden in subclasses
     }
 
     protected signalPropertyChanged(name: string): void {
@@ -127,7 +128,7 @@ export abstract class AInstance implements Instance {
     public Clone<T extends Instance>(): T {
         if (!this.Archivable) return undefined as unknown as T;
 
-        const ctor = (this.constructor as new (name: string, className: string, parent?: Instance) => T);
+        const ctor = (this.constructor as new (name: string, className: string) => T);
         const clone = new ctor(this.Name, this.ClassName);
         clone.Archivable = this.Archivable;
 
@@ -287,14 +288,16 @@ export abstract class AInstance implements Instance {
         return ancestor.IsAncestorOf(this);
     }
 
-    public IsPropertyModified(name: keyof AInstance["DefaultProperties"]): boolean {
-        const defaultValue = this.DefaultProperties[name];
+    public IsPropertyModified(name: keyof typeof AInstance.DefaultProperties): boolean {
+        const defaults = (this.constructor as typeof AInstance).DefaultProperties;
+        const defaultValue = defaults[name];
         const currentValue = (this as any)[name];
         return defaultValue !== currentValue;
     }
 
-    public ResetPropertyToDefault(name: Extract<keyof AInstance["DefaultProperties"], string>): void {
-        const defaultValue = this.DefaultProperties[name];
+    public ResetPropertyToDefault(name: Extract<keyof typeof AInstance.DefaultProperties, string>): void {
+        const defaults = (this.constructor as typeof AInstance).DefaultProperties;
+        const defaultValue = defaults[name];
         if ((this as any)[name] !== defaultValue) {
             (this as any)[name] = defaultValue;
             this.signalPropertyChanged(name);
