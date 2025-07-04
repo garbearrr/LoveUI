@@ -1,7 +1,5 @@
 import { AGuiObject } from "./GuiObject";
 
-declare const math: { rad: (deg: number) => number } & Record<string, any>;
-
 export class FrameWidget extends AGuiObject implements Frame {
     protected static DefaultProperties = {
         ...AGuiObject.DefaultProperties,
@@ -19,10 +17,10 @@ export class FrameWidget extends AGuiObject implements Frame {
             this.AbsolutePosition.X + this.AbsoluteSize.X / 2,
             this.AbsolutePosition.Y + this.AbsoluteSize.Y / 2,
         );
-        love.graphics.rotate(math.rad(this.AbsoluteRotation));
+        love.graphics.rotate(this.AbsoluteRotation * (Math.PI / 180));
         love.graphics.translate(-this.AbsoluteSize.X / 2, -this.AbsoluteSize.Y / 2);
 
-        const totalAlpha = 1 - math.min(
+        const totalAlpha = 1 - Math.min(
             1,
             this.BackgroundTransparency + this.Transparency,
         );

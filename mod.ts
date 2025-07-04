@@ -14,11 +14,11 @@ love.load = () => {
     frame = Instance.New("Frame") as FrameWidget;
     frame.Parent = root;
     frame.Position = { X: { Scale: 0.5, Pixel: -50 }, Y: { Scale: 0.5, Pixel: -25 } };
-    frame.Size = { X: { Scale: 0, Pixel: 100 }, Y: { Scale: 0, Pixel: 50 } };
+    frame.Size = { X: { Scale: 0, Pixel: 150 }, Y: { Scale: 0, Pixel: 50 } };
     frame.BackgroundColor3 = { R: 0.2, G: 0.6, B: 1 };
     frame.BorderColor3 = { R: 1, G: 1, B: 1 };
     frame.BorderSizePixel = 2;
-    frame.Rotation = 15;
+    frame.Rotation = 90;
     frame.Transparency = 0.1;
     frame.BorderMode = "Middle";
 };
