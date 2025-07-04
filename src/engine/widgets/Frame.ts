@@ -18,8 +18,9 @@ export class FrameWidget extends AGuiObject implements Frame {
             this.AbsolutePosition.X,
             this.AbsolutePosition.Y,
             this.AbsoluteSize.X,
-            this.AbsoluteSize.Y,
+            this.AbsoluteSize.Y
         );
+
         if (this.BorderSizePixel > 0) {
             const bc = this.BorderColor3;
             love.graphics.setColor(bc.R, bc.G, bc.B, 1 - this.BackgroundTransparency);
