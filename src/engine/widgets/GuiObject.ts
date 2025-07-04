@@ -24,6 +24,30 @@ export abstract class AGuiObject extends AGuiBase implements GuiObject {
     private _visible = true;
     private _zIndex = 0;
 
+    protected static DefaultProperties = {
+        ...AGuiBase.DefaultProperties,
+        _anchorPoint: { X: 0, Y: 0 },
+        _automaticSize: "None" as AutomaticSize,
+        _backgroundColor3: { R: 1, G: 1, B: 1 },
+        _backgroundTransparency: 0,
+        _borderColor3: { R: 0, G: 0, B: 0 },
+        _borderMode: "Outline" as BorderMode,
+        _borderSizePixel: 1,
+        _clipsDescendants: false,
+        _draggable: false,
+        _layoutOrder: 0,
+        _position: { X: { Scale: 0, Pixel: 0 }, Y: { Scale: 0, Pixel: 0 } },
+        _rotation: 0,
+        _selectable: false,
+        _selectionImageObject: undefined as GuiObject | undefined,
+        _selectionOrder: 0,
+        _size: { X: { Scale: 0, Pixel: 0 }, Y: { Scale: 0, Pixel: 0 } },
+        _sizeConstraint: "RelativeXY" as SizeConstraint,
+        _transparency: 0,
+        _visible: true,
+        _zIndex: 0,
+    };
+
     // events
     public readonly DragBegin = new Event<{ initialPosition: UDim2 }>();
     public readonly DragStopped = new Event<{ x: number; y: number }>();
@@ -36,29 +60,8 @@ export abstract class AGuiObject extends AGuiBase implements GuiObject {
     public readonly MouseWheelBackward = new Event<{ x: number; y: number }>();
     public readonly MouseWheelForward = new Event<{ x: number; y: number }>();
 
-    protected constructor(name: string, className: string, parent?: Instance) {
-        super(name, className, parent);
-
-        this.DefaultProperties._anchorPoint = { X: 0, Y: 0 };
-        this.DefaultProperties._automaticSize = "None";
-        this.DefaultProperties._backgroundColor3 = { R: 1, G: 1, B: 1 };
-        this.DefaultProperties._backgroundTransparency = 0;
-        this.DefaultProperties._borderColor3 = { R: 0, G: 0, B: 0 };
-        this.DefaultProperties._borderMode = "Outline";
-        this.DefaultProperties._borderSizePixel = 1;
-        this.DefaultProperties._clipsDescendants = false;
-        this.DefaultProperties._draggable = false;
-        this.DefaultProperties._layoutOrder = 0;
-        this.DefaultProperties._position = { X: { Scale: 0, Pixel: 0 }, Y: { Scale: 0, Pixel: 0 } };
-        this.DefaultProperties._rotation = 0;
-        this.DefaultProperties._selectable = false;
-        this.DefaultProperties._selectionImageObject = undefined;
-        this.DefaultProperties._selectionOrder = 0;
-        this.DefaultProperties._size = { X: { Scale: 0, Pixel: 0 }, Y: { Scale: 0, Pixel: 0 } };
-        this.DefaultProperties._sizeConstraint = "RelativeXY";
-        this.DefaultProperties._transparency = 0;
-        this.DefaultProperties._visible = true;
-        this.DefaultProperties._zIndex = 0;
+    protected constructor(name: string, className: string) {
+        super(name, className);
     }
 
     // property accessors
@@ -203,6 +206,7 @@ export abstract class AGuiObject extends AGuiBase implements GuiObject {
     }
     public set Transparency(v: number) {
         this._transparency = v;
+        this._backgroundTransparency = v;
         this.signalPropertyChanged("Transparency");
     }
 
@@ -262,5 +266,86 @@ export abstract class AGuiObject extends AGuiBase implements GuiObject {
         this.Position = endPosition;
         if (callback) callback("Completed");
         return true;
+    }
+
+    protected computeAbsolute(): void {
+        const parent = this.Parent as AGuiObject | undefined;
+        let pPos: Vector2;
+        let pSize: Vector2;
+        let pRot: number;
+        if (parent) {
+            pPos = parent.AbsolutePosition;
+            pSize = parent.AbsoluteSize;
+            pRot = parent.AbsoluteRotation;
+        } else {
+            pPos = { X: 0, Y: 0 };
+            pSize = { X: love.graphics.getWidth(), Y: love.graphics.getHeight() };
+            pRot = 0;
+        }
+
+        let sizeBaseX = pSize.X;
+        let sizeBaseY = pSize.Y;
+        switch (this._sizeConstraint) {
+            case "RelativeYY":
+                sizeBaseX = pSize.Y;
+                sizeBaseY = pSize.Y;
+                break;
+            case "RelativeXX":
+                sizeBaseX = pSize.X;
+                sizeBaseY = pSize.X;
+                break;
+            case "RelativeYYAndXX":
+                sizeBaseX = pSize.Y;
+                sizeBaseY = pSize.X;
+                break;
+            case "RelativeXXAndXY":
+                sizeBaseX = pSize.X;
+                sizeBaseY = pSize.X;
+                break;
+            case "RelativeXYAndYY":
+                sizeBaseX = pSize.X;
+                sizeBaseY = pSize.Y;
+                break;
+            case "RelativeXY":
+            default:
+                sizeBaseX = pSize.X;
+                sizeBaseY = pSize.Y;
+                break;
+        }
+
+        let absW = sizeBaseX * this._size.X.Scale + this._size.X.Pixel;
+        let absH = sizeBaseY * this._size.Y.Scale + this._size.Y.Pixel;
+
+        if (this._automaticSize === "X" || this._automaticSize === "XY") {
+            absW = sizeBaseX;
+        }
+        if (this._automaticSize === "Y" || this._automaticSize === "XY") {
+            absH = sizeBaseY;
+        }
+
+        this._absoluteSize = { X: absW, Y: absH };
+
+        this._absolutePosition = {
+            X:
+                pPos.X +
+                pSize.X * this._position.X.Scale +
+                this._position.X.Pixel -
+                this._anchorPoint.X * this._absoluteSize.X,
+            Y:
+                pPos.Y +
+                pSize.Y * this._position.Y.Scale +
+                this._position.Y.Pixel -
+                this._anchorPoint.Y * this._absoluteSize.Y,
+        };
+
+        this._absoluteRotation = pRot + this._rotation;
+    }
+
+    public Update(dt: number): void {
+        this.computeAbsolute();
+    }
+
+    public Draw(): void {
+        // override in widgets
     }
 }
