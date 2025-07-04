@@ -50,6 +50,11 @@ interface InputObject {}
 interface Instances {
         Frame: Frame;
         RootWidget: Frame;
+        CanvasGroup: CanvasGroup;
+        GuiButton: GuiButton;
+        GuiLabel: GuiLabel;
+        ScrollingFrame: ScrollingFrame;
+        TextBox: TextBox;
 }
 
 interface Instance {
@@ -530,3 +535,86 @@ interface GuiObject extends GuiBase {
 
 interface Frame extends GuiObject {}
 interface RootWidget extends Frame {}
+
+interface CanvasGroup extends GuiObject {
+    GroupColor3: Color3;
+    GroupTransparency: number;
+}
+
+interface GuiButton extends GuiObject {
+    AutoButtonColor: boolean;
+    Modal: boolean;
+    Selected: boolean;
+    Style: any;
+    readonly Activated: IEvent<(inputObject: InputObject, clickCount: number) => void>;
+    readonly MouseButton1Click: IEvent<() => void>;
+    readonly MouseButton1Down: IEvent<(x: number, y: number) => void>;
+    readonly MouseButton1Up: IEvent<(x: number, y: number) => void>;
+    readonly MouseButton2Click: IEvent<() => void>;
+    readonly MouseButton2Down: IEvent<(x: number, y: number) => void>;
+    readonly MouseButton2Up: IEvent<(x: number, y: number) => void>;
+}
+
+interface GuiLabel extends GuiObject {
+}
+
+interface ScrollingFrame extends GuiObject {
+    readonly AbsoluteCanvasSize: Vector2;
+    readonly AbsoluteWindowSize: Vector2;
+    AutomaticCanvasSize: AutomaticSize;
+    BottomImage: string;
+    CanvasPosition: Vector2;
+    CanvasSize: UDim2;
+    ElasticBehavior: any;
+    HorizontalScrollBarInset: any;
+    MidImage: string;
+    ScrollBarImageColor3: Color3;
+    ScrollBarImageTransparency: number;
+    ScrollBarThickness: number;
+    ScrollingDirection: any;
+    ScrollingEnabled: boolean;
+    TopImage: string;
+    VerticalScrollBarInset: any;
+    VerticalScrollBarPosition: any;
+}
+
+interface TextBox extends GuiObject {
+    ClearTextOnFocus: boolean;
+    readonly ContentText: string;
+    CursorPosition: number;
+    Font: any;
+    FontFace: any;
+    FontSize: any;
+    LineHeight: number;
+    MaxVisibleGraphemes: number;
+    MultiLine: boolean;
+    OpenTypeFeatures: string;
+    readonly OpenTypeFeaturesError: string;
+    PlaceholderColor3: Color3;
+    PlaceholderText: string;
+    RichText: boolean;
+    SelectionStart: number;
+    ShowNativeInput: boolean;
+    Text: string;
+    readonly TextBounds: Vector2;
+    TextColor3: Color3;
+    TextDirection: any;
+    TextEditable: boolean;
+    readonly TextFits: boolean;
+    TextScaled: boolean;
+    TextSize: number;
+    TextStrokeColor3: Color3;
+    TextStrokeTransparency: number;
+    TextTransparency: number;
+    TextTruncate: any;
+    TextWrap: boolean;
+    TextWrapped: boolean;
+    TextXAlignment: any;
+    TextYAlignment: any;
+    CaptureFocus(this: TextBox): void;
+    IsFocused(this: TextBox): boolean;
+    ReleaseFocus(this: TextBox, submitted?: boolean): void;
+    readonly FocusLost: IEvent<{ enterPressed: boolean; inputThatCausedFocusLoss: InputObject }>;
+    readonly Focused: IEvent<void>;
+    readonly ReturnPressedFromOnScreenKeyboard: IEvent<void>;
+}

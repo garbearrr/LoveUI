@@ -1,9 +1,19 @@
 import { FrameWidget } from "./widgets/Frame";
 import { RootWidget } from "./widgets/RootWidget";
+import { CanvasGroupWidget } from "./widgets/CanvasGroup";
+import { GuiButtonWidget } from "./widgets/GuiButton";
+import { GuiLabelWidget } from "./widgets/GuiLabel";
+import { ScrollingFrameWidget } from "./widgets/ScrollingFrame";
+import { TextBoxWidget } from "./widgets/TextBox";
 
 const classMap: { [K in keyof Instances]: new (name: string) => Instances[K] } = {
     Frame: FrameWidget as any,
     RootWidget: RootWidget as any,
+    CanvasGroup: CanvasGroupWidget as any,
+    GuiButton: GuiButtonWidget as any,
+    GuiLabel: GuiLabelWidget as any,
+    ScrollingFrame: ScrollingFrameWidget as any,
+    TextBox: TextBoxWidget as any,
 };
 
 let root: RootWidget | undefined;
